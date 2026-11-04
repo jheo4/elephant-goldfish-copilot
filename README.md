@@ -15,35 +15,6 @@ A practical software engineering template bringing the **Elephant-Goldfish (EG)*
 
 Inspired by Google's [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) (see the [Google Open Source Blog announcement](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html)), Dave Rensin's foundational essay, and Vladyslav Shvedov's MIT fork. While the original model focused on drafting design documents in CLI harnesses, this template is **natively adapted for GitHub Copilot in VS Code**, extending the workflow across the entire development lifecycle (PRD, feature implementation, bug fixing, and pre-commit reviews).
 
-```mermaid
-flowchart TD
-    Human["👤 Developer<br/>(Approves tradeoffs & scope)"]
-
-    subgraph ElephantEnv["🐘 Elephant (Deep Context Orchestrator)"]
-        direction TB
-        E_State["Full Chat History + Codebase Background"]
-        E_Work["Drafts Specs / Writes Code / Runs Commands"]
-    end
-
-    subgraph GoldfishEnv["🐟 Goldfish Subagents (Zero-Context Reviewers)"]
-        direction TB
-        G_State["Zero Chat History (3-second memory)"]
-        G_Review["Inspects ONLY Target Document / Diff"]
-        G_Verdict{"Verdict: PASS?"}
-    end
-
-    subgraph GateEnv["🛡️ Deterministic Gates"]
-        Tests["Real 'npm test' / 'lint' commands"]
-    end
-
-    Human -->|Goals & Feedback| ElephantEnv
-    ElephantEnv -->|"Isolates Input (No Chat History)"| GoldfishEnv
-    G_Review --> G_Verdict
-    G_Verdict -->|"EG-VERDICT: REVISE"| ElephantEnv
-    G_Verdict -->|"EG-VERDICT: PASS (No-Code Gate Passed)"| GateEnv
-    GateEnv -->|"All tests pass"| Done["🚀 Ship Production-Ready Code"]
-```
-
 ---
 
 ## Architecture & The Pack System
@@ -204,6 +175,39 @@ EG-VERDICT: PASS | EG-VERDICT: REVISE
 - [docs/DESIGN.md](docs/DESIGN.md): Detailed architectural design and probe results.
 - [docs/VALIDATION.md](docs/VALIDATION.md): Empirical test scenarios and validation matrix.
 - [harness-probe/README.md](harness-probe/README.md): Probe test kit for validating agent harness capabilities.
+
+---
+
+## Architecture & Lifecycle Diagram
+
+```mermaid
+flowchart TD
+    Human["👤 Developer<br/>(Approves tradeoffs & scope)"]
+
+    subgraph ElephantEnv["🐘 Elephant (Deep Context Orchestrator)"]
+        direction TB
+        E_State["Full Chat History + Codebase Background"]
+        E_Work["Drafts Specs / Writes Code / Runs Commands"]
+    end
+
+    subgraph GoldfishEnv["🐟 Goldfish Subagents (Zero-Context Reviewers)"]
+        direction TB
+        G_State["Zero Chat History (3-second memory)"]
+        G_Review["Inspects ONLY Target Document / Diff"]
+        G_Verdict{"Verdict: PASS?"}
+    end
+
+    subgraph GateEnv["🛡️ Deterministic Gates"]
+        Tests["Real 'npm test' / 'lint' commands"]
+    end
+
+    Human -->|Goals & Feedback| ElephantEnv
+    ElephantEnv -->|"Isolates Input (No Chat History)"| GoldfishEnv
+    G_Review --> G_Verdict
+    G_Verdict -->|"EG-VERDICT: REVISE"| ElephantEnv
+    G_Verdict -->|"EG-VERDICT: PASS (No-Code Gate Passed)"| GateEnv
+    GateEnv -->|"All tests pass"| Done["🚀 Ship Production-Ready Code"]
+```
 
 ---
 
