@@ -1,11 +1,48 @@
 # Elephant-Goldfish (EG) for GitHub Copilot
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/VS%20Code-1.90%2B-007ACC?logo=visualstudiocode&logoColor=white" alt="VS Code">
+  <img src="https://img.shields.io/badge/GitHub%20Copilot-Chat%20%26%20Local-8957e5?logo=githubcopilot&logoColor=white" alt="GitHub Copilot">
+  <img src="https://img.shields.io/badge/Template-Ready-success" alt="Template Ready">
+  <a href="https://github.com/google/elephant-goldfish-model"><img src="https://img.shields.io/badge/Inspired%20by-Google%20EGM-4285F4?logo=google&logoColor=white" alt="Google EGM"></a>
+</p>
+
 A practical software engineering template bringing the **Elephant-Goldfish (EG)** workflow into **GitHub Copilot in VS Code**.
 
 - **Elephant**: An orchestrator agent holding the full conversation context, repository history, and domain background. It writes specifications and code, runs tests, and interacts directly with you.
 - **Goldfish**: Zero-context, read-only subagents that start fresh without prior chat history. They evaluate documents and diffs with complete objectivity, catching unstated assumptions, ambiguities, and architectural blind spots that familiarity obscures.
 
 Inspired by Google's [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) (see the [Google Open Source Blog announcement](https://opensource.googleblog.com/2026/10/introducing-elephant-goldfish-model-plugin.html)), Dave Rensin's foundational essay, and Vladyslav Shvedov's MIT fork. While the original model focused on drafting design documents in CLI harnesses, this template is **natively adapted for GitHub Copilot in VS Code**, extending the workflow across the entire development lifecycle (PRD, feature implementation, bug fixing, and pre-commit reviews).
+
+```mermaid
+flowchart TD
+    Human["👤 Developer<br/>(Approves tradeoffs & scope)"]
+
+    subgraph ElephantEnv["🐘 Elephant (Deep Context Orchestrator)"]
+        direction TB
+        E_State["Full Chat History + Codebase Background"]
+        E_Work["Drafts Specs / Writes Code / Runs Commands"]
+    end
+
+    subgraph GoldfishEnv["🐟 Goldfish Subagents (Zero-Context Reviewers)"]
+        direction TB
+        G_State["Zero Chat History (3-second memory)"]
+        G_Review["Inspects ONLY Target Document / Diff"]
+        G_Verdict{"Verdict: PASS?"}
+    end
+
+    subgraph GateEnv["🛡️ Deterministic Gates"]
+        Tests["Real 'npm test' / 'lint' commands"]
+    end
+
+    Human -->|Goals & Feedback| ElephantEnv
+    ElephantEnv -->|"Isolates Input (No Chat History)"| GoldfishEnv
+    G_Review --> G_Verdict
+    G_Verdict -->|"EG-VERDICT: REVISE"| ElephantEnv
+    G_Verdict -->|"EG-VERDICT: PASS (No-Code Gate Passed)"| GateEnv
+    GateEnv -->|"All tests pass"| Done["🚀 Ship Production-Ready Code"]
+```
 
 ---
 
